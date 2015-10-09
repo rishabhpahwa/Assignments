@@ -1,0 +1,81 @@
+
+#########################################
+#	CSL-333: Lab Assignment 1	#
+#	Name: Rishabh Pahwa.		#
+#	Entry No: 2013CSB1028		#
+#########################################	
+
+=============================================================================================
+The program is based on queue structures and using the same message passing is made possible
+among various process running in the system. A program sends it's information as a message on
+a queue and it remains there until another process with appropriate permissions to access the
+queue reads it and hence removes it. This is demonstrated in this project via four external
+and one central process which keep exchanging information until stability.
+============================================================================================
+
+# central.c
+
+typedef struct 
+{
+	long priority;
+	int temp;
+	int pid;
+	int stable;
+} msgp;
+
+int main(int argc, char *argv[])	//accepts an initial central temperature.
+{
+	msgp external(1 to 4), central;
+
+	loop:
+		msgrcv (from the 4 external processes)
+		if (received msges are same as previous temps)
+			stability attained
+			exit loop.
+		else
+			central.temp=(2*central.temp + sum of temps of 4 ext processes)/6;
+			msgsnd(central.temp --> all 4 ext processes)
+			repeat loop:
+	return;
+}
+
+The above pseudo-code explains the central.c program in short. The queue data structure is implemented
+by the POSIX message queues and is ideal for the job at hand.
+
+**************************************************************************************************
+
+# external.c
+
+typedef struct 
+{
+	long priority;
+	int temp;
+	int pid;
+	int stable;
+} msgp;
+	
+int main(int argc, char *argv[])	// Accepts the initial temp for external process and a unique id number.
+{
+	msgp external(using key), central;
+	
+	msgsnd(external.temp --> central process)
+	
+	loop:
+		msgrcv(temperature from central process)
+		if (central temp == -1)
+			Stablility attained.
+			exit loop
+		else
+			external.temp=(3*external.temp + 2*central_t.temp)/5;
+			msgsnd(external.temp --> central process)
+			repeat loop:
+	return;
+}
+
+The msgsnd and msgrcv use queue ID's to identify which queues to send messages to which are unique to each of the
+queues created.
+	
+	
+	
+	
+- Author: Rishabh Pahwa.
